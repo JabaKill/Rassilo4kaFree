@@ -47,8 +47,10 @@ async def send_messages():
                 except Exception as e:
                     print(f"❌ Ошибка при отправке в {chat}: {e}")
 
-            print("⏳ Жду 30 минут перед следующей отправкой...")
-            await asyncio.sleep(1800)  # Ждать 30 минут
+            print("⏳ Жду 5 минут перед следующей отправкой...")
+            await asyncio.sleep(300)  # Ждать 5 минут
 
 # Запуск асинхронной функции
-asyncio.run(send_messages())
+if __name__ == "__main__":
+    asyncio.run(send_messages())
+
