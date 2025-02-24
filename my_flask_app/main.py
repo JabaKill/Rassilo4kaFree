@@ -1,6 +1,7 @@
 import asyncio
 from telethon import TelegramClient
-from flask import Flask
+from flask import Flask, jsonify
+from threading import Thread
 
 # Данные из my.telegram.org
 api_id = 24209149
@@ -36,9 +37,15 @@ async def send_messages():
                     await asyncio.sleep(5)
                 except Exception as e:
                     print(f"❌ Ошибка при отправке в {chat}: {e}")
-            print("⏳ Жду 30 минут перед следующей отправкой...")
-            await asyncio.sleep(1800)
+            print("⏳ Жду 5 минут перед следующей отправкой...")
+            await asyncio.sleep(300)
 
-# Запуск асинхронной функции
+def run_asyncio_loop(loop):
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(send_messages())
+
 if __name__ == "__main__":
-    asyncio.run(send_messages())
+    loop = asyncio.new_event_loop()
+    t = Thread(target=run_asyncio_loop, args=(loop,))
+    t.start()
+    app.run(debug=True, use_reloader=False)  # Убедитесь, что reloader выключен
