@@ -1,5 +1,6 @@
 import asyncio
 from telethon import TelegramClient
+from flask import Flask
 
 # Данные из my.telegram.org
 api_id = 24209149
@@ -15,7 +16,7 @@ chat_usernames = [
     "@arbitragetrafficchat", "@tg_land_all", "@reklama_exchange",
     "@buy_sell_tiktok", "@zalivi_trafika", "@trafik_prodam_kuplyu",
     "@byrzha_reklamy2", "@birzha_reklamy9", "@byrzha_reklami2",
-    "@birzha_reklami3", "@birzha_reklamy22", "@birzha_reklami7",
+    "@birzha_reklami3", "@birzha_reklamy22", "@birzha_reklamy7",
     "@saletraff", "@channel_market1", "@top_ads_freelance", "https://t.me/Birzha_trafika", "@work_online_today", "@trafik_chat"
 ]
 
@@ -32,6 +33,12 @@ message_text = """🚨ВНИМАНИЕ🚨
 ✈️Заказ: @nakamuraboost
 🏦Оплата любым удобным способом!
 """
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return "Бот работает и готов отправлять сообщения!"
 
 async def send_messages():
     async with TelegramClient("session_name", api_id, api_hash) as client:
@@ -50,7 +57,11 @@ async def send_messages():
             print("⏳ Жду 5 минут перед следующей отправкой...")
             await asyncio.sleep(300)  # Ждать 5 минут
 
-# Запуск асинхронной функции
-if __name__ == "__main__":
+@app.route('/start-sending')
+def start_sending():
     asyncio.run(send_messages())
+    return "Началась отправка сообщений!"
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)  # Используй порт 5000
 
