@@ -1,6 +1,7 @@
 import asyncio
 from telethon import TelegramClient
 from flask import Flask
+import threading
 
 # Данные из my.telegram.org
 api_id = 24209149
@@ -57,11 +58,10 @@ async def send_messages():
             print("⏳ Жду 5 минут перед следующей отправкой...")
             await asyncio.sleep(300)  # Ждать 5 минут
 
-# Запуск асинхронной функции в фоновом режиме
-@app.before_first_request
-def start_sending():
+def run_async_tasks():
     asyncio.run(send_messages())
 
-# Запуск приложения
+# Запуск асинхронной функции в фоновом режиме
 if __name__ == "__main__":
+    threading.Thread(target=run_async_tasks).start()
     app.run(host='0.0.0.0', port=5000)
