@@ -2,6 +2,8 @@ import asyncio
 from telethon import TelegramClient
 from flask import Flask
 
+app = Flask(__name__)
+
 # Данные из my.telegram.org
 api_id = 24209149
 api_hash = "357ffa520f5bc72970a54ee00d883cf8"
@@ -34,12 +36,6 @@ message_text = """🚨ВНИМАНИЕ🚨
 🏦Оплата любым удобным способом!
 """
 
-app = Flask(__name__)
-
-@app.route('/')
-def index():
-    return "Бот работает и готов отправлять сообщения!"
-
 async def send_messages():
     async with TelegramClient("session_name", api_id, api_hash) as client:
         await client.start(phone_number)
@@ -57,11 +53,12 @@ async def send_messages():
             print("⏳ Жду 5 минут перед следующей отправкой...")
             await asyncio.sleep(300)  # Ждать 5 минут
 
-@app.route('/start-sending')
-def start_sending():
-    asyncio.run(send_messages())
-    return "Началась отправка сообщений!"
+@app.route("/")
+def home():
+    return "Бот запущен!"
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)  # Используй порт 5000
-
+    # Запускаем отправку сообщений в фоновом режиме
+    loop = asyncio.get_event_loop()
+    loop.create_task(send_messages())
+    app.run(host="0.0.0.0", port=5000)  # Используем 5000 порт для Gunicorn
